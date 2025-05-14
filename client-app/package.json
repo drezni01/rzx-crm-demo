@@ -1,0 +1,61 @@
+{
+  "name": "hoistapp",
+  "version": "4.0-SNAPSHOT",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "build": "webpack --env prodBuild",
+    "buildAndAnalyze": "webpack --env prodBuild --env analyzeBundles",
+    "hoistVer": "cat node_modules/@xh/hoist/package.json | grep version",
+    "lint": "yarn lint:all",
+    "lint:all": "yarn lint:js && yarn lint:styles",
+    "lint:js": "eslint --ext .js,.jsx,.ts,.tsx .",
+    "lint:styles": "stylelint \"**/*.s?(a|c)ss\"",
+    "start": "yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server",
+    "startOnDevice": "yarn install && webpack-dev-server --env inlineHoist --env devHost=$(hostname)",
+    "startAndAnalyze": "yarn install && webpack-dev-server --env analyzeBundles",
+    "startWithHoist": "cd ../../hoist-react && yarn install && cd ../hoistapp/client-app && yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env inlineHoist",
+    "prepare": "cd .. && husky install client-app/.husky"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint",
+      "prettier --write"
+    ],
+    "*.s?(a|c)ss": [
+      "stylelint",
+      "prettier --write"
+    ]
+  },
+  "dependencies": {
+    "@fortawesome/free-brands-svg-icons": "^6.4.0",
+    "@microsoft/signalr": "^7.0.9",
+    "@xh/hoist": "^73.0.0-SNAPSHOT",
+    "@xh/package-template": "~3.0.1",
+    "@ag-grid-community/core": "~31.2.0",
+    "@ag-grid-community/react": "~31.2.0",
+    "core-js": "3.x",
+    "lodash": "^4.x",
+    "moment": "2.x",
+    "react": "~18.2.0",
+    "react-dom": "~18.2.0"
+  },
+  "devDependencies": {
+    "@xh/hoist-dev-utils": "^11.0.0-SNAPSHOT",
+    "cross-env": "7.x",
+    "eslint": "8.x",
+    "eslint-config-prettier": "9.x",
+    "husky": "9.x",
+    "lint-staged": "15.x",
+    "patch-package": "^8.0.0",
+    "postcss": "8.x",
+    "postinstall-postinstall": "^2.1.0",
+    "prettier": "3.x",
+    "stylelint": "16.x",
+    "stylelint-config-standard-scss": "13.x",
+    "typescript": "~5.1.6"
+  },
+  "resolutions": {
+    "core-js": "3.x"
+  }
+}

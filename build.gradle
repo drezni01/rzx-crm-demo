@@ -1,0 +1,113 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        maven {url 'https://repo.grails.org/grails/core'}
+    }
+    dependencies {
+        classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
+        classpath "org.grails.plugins:hibernate5:$grailsHibernatePluginVersion"
+    }
+}
+
+version xhAppVersion
+group xhAppPackage
+
+apply plugin:'idea'
+apply plugin:'war'
+apply plugin:'org.grails.grails-web'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {url 'https://repo.grails.org/grails/core'}
+    maven {url 'https://repo.xh.io/content/groups/public/'}
+}
+
+configurations {
+    all {
+        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    }
+}
+
+springBoot {
+    mainClass = xhAppPackage + ".Application"
+}
+
+boolean inlineHoist = runHoistInline == 'true'
+if (inlineHoist) {
+    println "${xhAppName}: running with Hoist Core INLINE...."
+    grails.plugins {
+        implementation project(":hoist-core")
+    }
+} else {
+    println "${xhAppName}: running with Hoist Core PACKAGED at v${hoistCoreVersion}...."
+    dependencies {
+        implementation "io.xh:hoist-core:$hoistCoreVersion"
+    }
+}
+
+dependencies {
+    implementation "org.bitbucket.b_c:jose4j:0.7.12"
+    runtimeOnly "mysql:mysql-connector-java:8.0.29"
+    runtimeOnly "net.sourceforge.jtds:jtds:1.3.1"
+
+    if (useSpringDevTools) {
+        runtimeOnly(
+            "org.springframework.boot:spring-boot-devtools",
+            "io.methvin:directory-watcher:0.15.0"
+        )
+    }
+}
+
+// Avoid unexpected errors with overly-long classpath on Windows development machines.
+grails {
+    pathingJar = true
+}
+
+Map hoistMetaData = [
+    'info.xh.appCode': xhAppCode,
+    'info.xh.appName': xhAppName,
+    'info.xh.appPackage': xhAppPackage,
+    'info.xh.appBuild': findProperty('xhAppBuild') ?: 'UNKNOWN'
+]
+
+def allJvmArgs = [
+        '-Dspring.output.ansi.enabled=always',
+        '-XX:TieredStopAtLevel=1',
+        '-Xmx512m',
+        '-Xms512m'
+]
+
+bootRun {
+    ignoreExitValue true
+    systemProperties System.properties
+    jvmArgs(allJvmArgs)
+    sourceResources sourceSets.main
+    systemProperties hoistMetaData
+}
+
+tasks.withType(GroovyCompile) {
+    configure(groovyOptions) {
+        forkOptions.jvmArgs = allJvmArgs
+    }
+}
+
+
+//--------------------------------------------------
+// Extensions to build.info (Hoist-Core requirement)
+//--------------------------------------------------
+tasks.war.doFirst {
+    File infoFile = layout.buildDirectory.file('resources/main/META-INF/grails.build.info').get().asFile
+    Properties properties = new Properties()
+    infoFile.withInputStream {properties.load(it)}
+    properties.putAll(hoistMetaData)
+    infoFile.withOutputStream {properties.store(it, null)}
+}
+
+// Ensure that all variables defined in .env.template are set in local .env
+//tasks.bootRun.doFirst {
+//    def missingEnvVars = env.allVariablesOrNull().findAll {it.value == null}.collect {it.key}
+//    if (missingEnvVars) {
+//        throw new GradleException("Environment variables listed in .env.template not set in local .env file as required: ${missingEnvVars}")
+//   }
+//}
