@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Rzx.Crm.Api": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:61068;http://localhost:61069"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+.ws-notify {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  clip-path: circle(50% at 50% 50%);
+
+  &__green {
+    background-color: #7f9a60;
+    box-shadow:
+      rgba(0, 0, 0, 0.2) 0 -1px 7px 1px,
+      inset #304701 0 -1px 9px,
+      #60704d 0 2px 12px;
+  }
+
+  &__green-blink {
+    background-color: #abff00;
+    box-shadow:
+      rgba(0, 0, 0, 0.2) 0 -1px 7px 1px,
+      inset #304701 0 -1px 9px,
+      #89ff00 0 2px 12px;
+  }
+
+  &__red {
+    background-color: #f00;
+    box-shadow:
+      rgba(0, 0, 0, 0.2) 0 -1px 7px 1px,
+      inset #441313 0 -1px 9px,
+      rgba(255, 0, 0, 0.5) 0 2px 12px;
+  }
+}

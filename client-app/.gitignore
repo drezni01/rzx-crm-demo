@@ -1,0 +1,10 @@
+# gradle
+.gradle/
+rzx-logs/
+*.log
+
+# Compiled source #
+###################
+build/
+node_modules/
+

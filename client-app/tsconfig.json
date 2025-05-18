@@ -12,9 +12,6 @@
     "noImplicitOverride": true,
     "jsx": "react",
     "useDefineForClassFields": true,
-    "paths": {
-      "@xh/hoist/*": ["../../hoist-react/*"]
-    },
     "lib": ["dom", "es2022"]
   },
   "include": ["src"]

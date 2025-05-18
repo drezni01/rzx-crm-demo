@@ -1,0 +1,28 @@
+{
+  "Serilog": {
+    "Using": [ "Serilog.Sinks.Console" ],
+    "MinimumLevel": {
+      "Default": "Information",
+      "Override": {
+        "Microsoft.aspNetCore": "information",
+        "Serilog.AspNetCore.RequestLoggingMiddleware": "Information",
+        "Microsoft.EntityFrameworkCore.Infrastructure": "Warning",
+        "Microsoft.EntityFrameworkCore.Database.Command": "Warning",
+        "Microsoft.AspNetCore.Hosting.Diagnostics": "Warning",
+        "Microsoft.AspNetCore.Routing": "Warning",
+        "Microsoft.AspNetCore.Cors": "Warning",
+        "Microsoft.AspNetCore.Mvc.Infrastructure": "Warning",
+        "System": "Error"
+      }
+    },
+    "WriteTo": [
+      {
+        "Name": "Console",
+        "Args": {
+          "outputtemplate": "{Timestamp:yyyy-MM-dd HH:mm:ss.fffZ} [{Level}] <{SourceContext}> {Message}{NewLine}{Exception}"
+        }
+      }
+    ],
+    "Enrich": ["FromLogContext"]
+  }
+}

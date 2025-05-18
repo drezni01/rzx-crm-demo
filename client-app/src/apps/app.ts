@@ -2,17 +2,17 @@ import '../Bootstrap';
 
 import {XH} from '@xh/hoist/core';
 import {AppContainer} from '@xh/hoist/desktop/appcontainer';
-import {App} from '../app/App';
-import {AppModel} from '../app/AppModel';
+import {CrmApp} from '../CrmApp';
+import {CrmAppModel} from '../CrmAppModel';
 
 XH.renderApp({
-    clientAppCode: 'app',
-    clientAppName: 'Hoist App',
-    componentClass: App,
-    modelClass: AppModel,
+    clientAppCode: 'CRM',
+    clientAppName: 'CRM',
+    componentClass: CrmApp,
+    modelClass: CrmAppModel,
     containerClass: AppContainer,
     isMobileApp: false,
-    isSSO: true,
-    webSocketsEnabled: true,
+    enableLogout: false,
+    webSocketsEnabled: false,
     checkAccess: 'USER'
 });
