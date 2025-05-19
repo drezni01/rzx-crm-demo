@@ -6,19 +6,19 @@ namespace Rzx.Crm.Api
 {
     public class AppStartupService : IHostedService
     {
-        private readonly IMediator mediator;
-        private readonly ILogger logger;
+        private readonly IMediator _mediator;
+        private readonly ILogger _logger;
 
         public AppStartupService(IMediator mediator, ILogger<AppStartupService> logger)
         {
-            this.mediator = mediator;
-            this.logger = logger;
+            _mediator = mediator;
+            _logger = logger;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            logger.LogInformation("Sending appstart message");
-            return mediator.Publish(new ApplicationStartedNotification());
+            _logger.LogInformation("Sending appstart message");
+            return _mediator.Publish(new ApplicationStartedNotification());
         }
 
         public Task StopAsync(CancellationToken cancellationToken)

@@ -8,33 +8,35 @@ namespace Rzx.Crm.Api.WebApi.Controllers
     [Route("orders")]
     public class OrderController : ControllerBase
     {
-        private OrderService orderService;
+        private readonly WebApiConfig _webApiConfig;
+        private readonly OrderService _orderService;
 
-        public OrderController(OrderService orderService)
+        public OrderController(WebApiConfig webApiConfig, OrderService orderService)
         {
-            this.orderService = orderService;
+            _webApiConfig = webApiConfig;
+            _orderService = orderService;
         }
 
         [HttpGet]
         public async Task<IEnumerable<Order>> GetOrders()
         {
-            await Task.Delay(1000);
-            return await orderService.GetAllOrdersAsync();
+            await Task.Delay(TimeSpan.FromSeconds(_webApiConfig.FakeDelaySec));
+            return await _orderService.GetAllOrdersAsync();
         }
 
         [HttpGet]
         [Route("customer/{customerId}")]
         public async Task<IEnumerable<Order>> GetOrdersByCustomer(int customerId)
         {
-            await Task.Delay(1000);
-            return await orderService.GetOrdersByCustomerId(customerId);
+            await Task.Delay(TimeSpan.FromSeconds(_webApiConfig.FakeDelaySec));
+            return await _orderService.GetOrdersByCustomerId(customerId);
         }
 
         [HttpPost]
         public async Task<Order> AddOrder([FromBody]Order order)
         {
-            await Task.Delay(1000);
-            await orderService.AddOrderAsync(order);
+            await Task.Delay(TimeSpan.FromSeconds(_webApiConfig.FakeDelaySec));
+            await _orderService.AddOrderAsync(order);
             return order;
         }
 
@@ -42,8 +44,8 @@ namespace Rzx.Crm.Api.WebApi.Controllers
         [Route("{id}")]
         public async Task<Order> UpdateOrder(int id,[FromBody] Order order)
         {
-            await Task.Delay(1000);
-            await orderService.UpdateOrderAsync(order);
+            await Task.Delay(TimeSpan.FromSeconds(_webApiConfig.FakeDelaySec));
+            await _orderService.UpdateOrderAsync(order);
             return order;
         }
 
@@ -51,8 +53,8 @@ namespace Rzx.Crm.Api.WebApi.Controllers
         [Route("{id}")]
         public async Task<IActionResult> DeleteOrder(int id)
         {
-            await Task.Delay(1000);
-            await orderService.DeleteOrderAsync(id);
+            await Task.Delay(TimeSpan.FromSeconds(_webApiConfig.FakeDelaySec));
+            await _orderService.DeleteOrderAsync(id);
             return Ok(id);
         }
     }

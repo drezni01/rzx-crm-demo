@@ -6,28 +6,28 @@ namespace Rzx.Crm.Core.Services
 {
     public class EmployeeService
     {
-        private readonly IDataRepository dataRepository;
-        private readonly ILogger logger;
+        private readonly IDataRepository _dataRepository;
+        private readonly ILogger _logger;
 
         public EmployeeService(IDataRepository dataRepository, ILogger<EmployeeService> logger)
         {
-            this.dataRepository = dataRepository;
-            this.logger = logger;
+            _dataRepository = dataRepository;
+            _logger = logger;
         }
 
         public Task<IEnumerable<Employee>> GetAllEmployeesAsync()
         {
-            return dataRepository.GetAllEmployeesAsync();
+            return _dataRepository.GetAllEmployeesAsync();
         }
 
         public Task AddEmployeeAsync(Employee employee)
         {
-            return dataRepository.AddEmployeeAsync(employee);
+            return _dataRepository.AddEmployeeAsync(employee);
         }
 
         public Task DeleteAllEmployeesAsync()
         {
-            return dataRepository.DeleteAllEmployeesAsync();
+            return _dataRepository.DeleteAllEmployeesAsync();
         }
 
     }

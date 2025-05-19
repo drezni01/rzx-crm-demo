@@ -1,7 +1,7 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, LoadSpec, managed, XH} from '@xh/hoist/core';
 import {makeObservable, observable} from '@xh/hoist/mobx';
-import {Customer, Order} from '../../../data/DataTypes';
+import {asServerException, Customer, Order} from '../../../data/DataTypes';
 import {fmtDateTimeSec} from '@xh/hoist/format';
 import {NotificationMessage} from '../../../data/MessageTypes';
 import {EditOrderDialogModel} from './EditOrderDialogModel';
@@ -23,25 +23,26 @@ export class OrdersModel extends HoistModel {
 
         this.addReaction({
             track: () => this.customer,
-            run: () => this.updateFilter()
+            run: () => this.loadData()
         });
 
         this.addReaction({
-            track: () => this.gridModel.store.records,
+            track: () => [XH.orderService.isLoading, this.gridModel.store.records],
             run: () => this.setHint()
         });
 
         // refresh rendered customer name when a customer changes
         XH.messageHub.subscribe('customer', this.xhId, (message: NotificationMessage) => {
-            if (
-                message.payload.eventType == 'UPDATE' &&
-                message.payload.entity.customerId === this.customer?.customerId
-            ) {
+            const {payload} = message,
+                {eventType, data} = payload,
+                customer = data as Customer;
+
+            if (eventType == 'UPDATE' && customer.customerId === this.customer?.customerId) {
                 this.gridModel.agApi.redrawRows();
             }
         });
 
-        this.updateFilter();
+        this.loadData();
         this.setHint();
     }
 
@@ -49,10 +50,14 @@ export class OrdersModel extends HoistModel {
         return this.gridModel.selectedRecord?.raw as Order;
     }
 
+    get customerId(): number {
+        return this.customer?.customerId ?? -1;
+    }
+
     addOrder() {
         this.orderEditor.open({
             orderId: 0,
-            customerId: this.customer.customerId,
+            customerId: this.customerId,
             salesPersonId: (XH.appModel as CrmAppModel).userId,
             productId: null,
             quantity: 0
@@ -76,22 +81,29 @@ export class OrdersModel extends HoistModel {
         });
         if (!confirm) return;
 
-        await XH.orderService.deleteOrderAsync(this.selectedOrder.orderId);
+        try {
+            await XH.orderService.deleteOrderAsync(this.selectedOrder.orderId);
+        } catch (e) {
+            XH.handleException(asServerException(e));
+        }
+    }
+
+    private loadData() {
+        XH.orderService.loadCustomer(this.customerId);
     }
 
     private updateFilter() {
-        const customerId = this.customer?.customerId ?? -1;
         this.gridModel.store.setFilter({
             field: 'customerId',
             op: '=',
-            value: customerId
+            value: this.customerId
         });
     }
 
     private setHint() {
-        const customerId = this.customer?.customerId ?? -1;
-
-        if (customerId == -1) this.gridModel.emptyText = ordersHint(HintTypeEnum.NO_CUSTOMER);
+        if (XH.orderService.isLoading) this.gridModel.emptyText = null;
+        else if (this.customerId == -1)
+            this.gridModel.emptyText = ordersHint(HintTypeEnum.NO_CUSTOMER);
         else if (isEmpty(this.gridModel.store.records))
             this.gridModel.emptyText = ordersHint(HintTypeEnum.NO_ORDERS);
     }

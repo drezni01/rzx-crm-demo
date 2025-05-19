@@ -33,6 +33,13 @@ namespace Rzx.Crm.Infra.Database
             await ctx.SaveChangesAsync();
         }
 
+        public async Task AddEmployeesAsync(IEnumerable<Employee> employees)
+        {
+            using var ctx = GetCtx();
+            await ctx.BulkInsertAsync(employees);
+            await ctx.SaveChangesAsync();
+        }
+
         public async Task DeleteAllEmployeesAsync()
         {
             using var ctx = GetCtx();
@@ -54,16 +61,27 @@ namespace Rzx.Crm.Infra.Database
             await ctx.SaveChangesAsync();
         }
 
+        public async Task AddCustomersAsync(IEnumerable<Customer> customers)
+        {
+            using var ctx = GetCtx();
+            await ctx.BulkInsertAsync(customers);
+            await ctx.SaveChangesAsync();
+        }
+
         public async Task DeleteCustomerAsync(int customerId)
         {
             using var ctx = GetCtx();
+            using var tran = await ctx.Database.BeginTransactionAsync();
+
             var customer = await ctx.Customers.FirstOrDefaultAsync(c => c.CustomerId == customerId);
             if (customer == null)
                 return;
 
             await ctx.Orders.Where(o => o.CustomerId == customerId).ExecuteDeleteAsync();
             ctx.Customers.Remove(customer);
+
             await ctx.SaveChangesAsync();
+            await tran.CommitAsync();
         }
 
         public async Task<IEnumerable<Customer>> GetAllCustomersAsync()
@@ -97,6 +115,13 @@ namespace Rzx.Crm.Infra.Database
         {
             using var ctx = GetCtx();
             await ctx.Products.AddAsync(product);
+            await ctx.SaveChangesAsync();
+        }
+
+        public async Task AddProductsAsync(IEnumerable<Product> products)
+        {
+            using var ctx = GetCtx();
+            await ctx.BulkInsertAsync(products);
             await ctx.SaveChangesAsync();
         }
 
@@ -143,6 +168,18 @@ namespace Rzx.Crm.Infra.Database
         {
             using var ctx = GetCtx();
             return await ctx.Orders.OrderBy(o => o.OrderId).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Order>> GetOrdersByCustomerAsync(int customerId)
+        {
+            using var ctx = GetCtx();
+            return await ctx.Orders.Where(o => o.CustomerId == customerId).ToListAsync();
+        }
+
+        public Task<int> GetOrderCountAsync(int customerId)
+        {
+            using var ctx = GetCtx();
+            return ctx.Orders.CountAsync(o => o.CustomerId == customerId);
         }
 
         public async Task UpdateOrderAsync(Order order)

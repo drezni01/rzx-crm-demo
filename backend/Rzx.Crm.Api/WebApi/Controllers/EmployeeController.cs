@@ -8,17 +8,20 @@ namespace Rzx.Crm.Api.WebApi.Controllers
     [ApiController]
     public class EmployeeController : ControllerBase
     {
-        private EmployeeService employeeService;
+        private readonly WebApiConfig _webApiConfig;
+        private readonly EmployeeService _employeeService;
 
-        public EmployeeController(EmployeeService employeeService)
+        public EmployeeController(WebApiConfig webApiConfig, EmployeeService employeeService)
         {
-            this.employeeService = employeeService;
+            _webApiConfig = webApiConfig;
+            _employeeService = employeeService;
         }
 
         [HttpGet]
         public async Task<IEnumerable<Employee>> GetEmployees()
         {
-            return await employeeService.GetAllEmployeesAsync();
+            await Task.Delay(TimeSpan.FromSeconds(_webApiConfig.FakeDelaySec));
+            return await _employeeService.GetAllEmployeesAsync();
         }
     }
 }

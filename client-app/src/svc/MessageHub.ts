@@ -100,6 +100,7 @@ export class MessageHub extends HoistService {
         if (isEmpty(subscriptions)) return;
 
         this.updateWsStatus('RCV');
+
         subscriptions.forEach(subscription => {
             try {
                 subscription.callbackFn?.(message);

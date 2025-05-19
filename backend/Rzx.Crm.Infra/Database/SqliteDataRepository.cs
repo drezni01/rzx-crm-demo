@@ -5,7 +5,7 @@ namespace Rzx.Crm.Infra.Database
 {
     public class SqliteDataRepository : DataRepositoryBase
     {
-        private ILoggerFactory loggerFactory;
+        private readonly ILoggerFactory _loggerFactory;
 
         public SqliteDataRepository(DatabaseConfig databaseConfig, ILoggerFactory loggerFactory) :base(databaseConfig)
         {
@@ -14,12 +14,12 @@ namespace Rzx.Crm.Infra.Database
                 dbx.Database.EnsureDeleted();
             dbx.Database.EnsureCreated();
 
-            this.loggerFactory = loggerFactory;
+            _loggerFactory = loggerFactory;
         }
 
         protected override DbContextBase GetCtx()
         {
-            return new SqliteDbContext(databaseConfig, loggerFactory);
+            return new SqliteDbContext(databaseConfig, _loggerFactory);
         }
     }
 }

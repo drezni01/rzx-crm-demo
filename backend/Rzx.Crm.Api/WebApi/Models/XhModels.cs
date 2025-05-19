@@ -39,7 +39,7 @@
         public int AppTimeZoneOffset => 0;
         public bool WebSocketsEnabled => false;
         public string InstanceName => XhDefault.AppInstance;
-        public string HoistCoreVersion => "30.0.0";
+        public string HoistCoreVersion => "30.1.0";
         public object AlertBanner => new { active = false };
         public object PollConfig => new { interval = -1, onVersionChange = "promptReload" };
     }

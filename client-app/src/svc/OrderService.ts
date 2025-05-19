@@ -3,15 +3,20 @@ import {Order} from '../data/DataTypes';
 import {csApiUrl} from './Defaults';
 import {MessagePayload, NotificationMessage} from '../data/MessageTypes';
 import {Store} from '@xh/hoist/data';
+import {makeObservable, observable} from '@xh/hoist/mobx';
 
 export class OrderService extends HoistService {
-    loadTask = TaskObserver.trackLast();
-    updateTask = TaskObserver.trackLast();
-    deleteTask = TaskObserver.trackLast();
+    apiTask = TaskObserver.trackLast();
+    @observable isLoading: boolean;
     private orderMap: Map<number, Order> = new Map();
     private msgBuffer: MessagePayload[] = [];
-    private isLoading: boolean;
     private stores: Map<string, Store> = new Map();
+    private customerId: number = -1;
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
 
     override async initAsync(): Promise<void> {
         XH.messageHub.subscribe('order', this.xhId, (message: NotificationMessage) => {
@@ -23,20 +28,22 @@ export class OrderService extends HoistService {
     }
 
     override async doLoadAsync(loadSpec: LoadSpec): Promise<void> {
-        console.log('enter load mode');
         this.isLoading = true;
-        const orders = await this.fetchOrders().linkTo(this.loadTask);
-        console.log('fetched orders');
         this.orderMap.clear();
+        this.stores.forEach(store => store.clear());
+
+        if (this.customerId < 0) {
+            this.isLoading = false;
+            return;
+        }
+
+        const orders = await this.fetchOrdersForCustomer(this.customerId).linkTo(this.apiTask);
         orders.forEach(order => this.orderMap.set(order.orderId, order));
         this.stores.forEach(store => store.loadData(orders));
-        console.log('loaded stores');
 
         this.isLoading = false;
-        console.log('exit load mode');
         const pendingMessages = [...this.msgBuffer];
         this.msgBuffer = [];
-        console.log(`process ${pendingMessages.length} pending msgs`);
         this.processMessages(pendingMessages);
     }
 
@@ -46,22 +53,33 @@ export class OrderService extends HoistService {
         store.loadData(Array.from(this.orderMap.values()));
     }
 
+    async loadCustomer(customerId: number) {
+        this.customerId = customerId;
+        await this.loadAsync();
+    }
+
     private processMessages(messages: MessagePayload[]) {
-        messages.forEach(message => {
-            const {eventType, entity} = message;
+        for (const message of messages) {
+            const {eventType, data} = message,
+                order = data as Order;
+
+            if (eventType == 'RELOAD') {
+                this.loadAsync();
+                break;
+            }
+
+            if (order.customerId !== this.customerId) continue;
+
             switch (eventType) {
                 case 'ADD':
                 case 'UPDATE':
-                    this.processAddOrUpdate(entity);
+                    this.processAddOrUpdate(order);
                     break;
                 case 'DELETE':
-                    this.processDelete(entity.orderId);
-                    break;
-                case 'RELOAD':
-                    this.loadAsync();
+                    this.processDelete(order.orderId);
                     break;
             }
-        });
+        }
     }
 
     private processAddOrUpdate(order: Order) {
@@ -87,23 +105,29 @@ export class OrderService extends HoistService {
     }
 
     async addOrderAsync(order: Order): Promise<void> {
-        order = await this.addOrderImpl(order).linkTo(this.updateTask);
+        order = await this.addOrderImpl(order).linkTo(this.apiTask);
         this.processAddOrUpdate(order);
     }
 
     async updateOrderAsync(order: Order): Promise<void> {
-        order = await this.updateOrderImpl(order).linkTo(this.updateTask);
+        order = await this.updateOrderImpl(order).linkTo(this.apiTask);
         this.processAddOrUpdate(order);
     }
 
     async deleteOrderAsync(orderId: number) {
-        await this.deleteOrderImpl(orderId).linkTo(this.deleteTask);
+        await this.deleteOrderImpl(orderId).linkTo(this.apiTask);
         this.processDelete(orderId);
     }
 
     private async fetchOrders(): Promise<Order[]> {
         return XH.fetchJson({
             url: `${csApiUrl}/orders`
+        });
+    }
+
+    private async fetchOrdersForCustomer(customerId: number): Promise<Order[]> {
+        return XH.fetchJson({
+            url: `${csApiUrl}/orders/customer/${customerId}`
         });
     }
 

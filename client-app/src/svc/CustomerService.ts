@@ -18,16 +18,19 @@ export class CustomerService extends HoistService {
 
     override async initAsync(): Promise<void> {
         XH.messageHub.subscribe('customer', this.xhId, (message: NotificationMessage) => {
-            console.log('CustomerService: message received', message);
-            switch (message.payload.eventType) {
+            const {payload} = message,
+                {eventType, data} = payload,
+                customer = data as Customer;
+                
+            switch (eventType) {
                 case 'ADD':
-                    this.addInPlace(message.payload.entity);
+                    this.addInPlace(customer);
                     break;
                 case 'UPDATE':
-                    this.updateInPlace(message.payload.entity);
+                    this.updateInPlace(customer);
                     break;
                 case 'DELETE':
-                    this.deleteInPlace(message.payload.entity.customerId);
+                    this.deleteInPlace(customer.customerId);
                     break;
                 case 'RELOAD':
                     this.loadAsync();

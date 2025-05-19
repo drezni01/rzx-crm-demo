@@ -1,4 +1,5 @@
-﻿using Rzx.Crm.Core.Configuration;
+﻿using Rzx.Crm.Api.WebApi;
+using Rzx.Crm.Core.Configuration;
 using Rzx.Crm.Infra.Configuration;
 
 namespace Rzx.Crm.Application
@@ -7,5 +8,6 @@ namespace Rzx.Crm.Application
     {
         public SeedDataConfig SeedData { get; set; }
         public DatabaseConfig Database { get; set; }
+        public WebApiConfig WebApi { get; set; }
     }
 }

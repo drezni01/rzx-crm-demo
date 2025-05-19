@@ -5,16 +5,17 @@ import {grid} from '@xh/hoist/cmp/grid';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
-import {fragment, hbox, hspacer, span} from '@xh/hoist/cmp/layout';
+import {filler, fragment, hbox, hspacer, span} from '@xh/hoist/cmp/layout';
 import {editOrderDialog} from './EditOrderDialog';
 import './Orders.scss';
+import {storeCountLabel} from '@xh/hoist/cmp/store';
 
 export const orders = hoistCmp.factory<OrdersModel>(({model}) =>
     fragment(
         panel({
             tbar: tbar(),
             item: grid(),
-            mask: [XH.orderService.loadTask, XH.orderService.deleteTask]
+            mask: [XH.orderService.apiTask]
         }),
         editOrderDialog({model: model.orderEditor})
     )
@@ -48,7 +49,9 @@ const tbar = hoistCmp.factory<OrdersModel>(({model}) =>
             intent: 'danger',
             disabled: !model.selectedOrder,
             onClick: () => model.deleteOrder()
-        })
+        }),
+        filler(),
+        storeCountLabel({store: model.gridModel.store, unit: 'order'})
     )
 );
 

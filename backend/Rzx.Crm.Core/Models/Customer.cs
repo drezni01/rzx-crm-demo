@@ -9,4 +9,9 @@
         public DateTime Timestamp { get; set; }
         public int EntityId => CustomerId;
     }
+
+    public class CustomerStats
+    {
+        public int OrderCount { get; set; }
+    }
 }

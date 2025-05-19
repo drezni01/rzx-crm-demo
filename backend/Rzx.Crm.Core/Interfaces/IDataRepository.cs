@@ -8,6 +8,7 @@ namespace Rzx.Crm.Core.Interfaces
         #region Employee
         Task<IEnumerable<Employee>> GetAllEmployeesAsync();
         Task AddEmployeeAsync(Employee employee);
+        Task AddEmployeesAsync(IEnumerable<Employee> employees);
         Task DeleteAllEmployeesAsync();
         #endregion
 
@@ -15,6 +16,7 @@ namespace Rzx.Crm.Core.Interfaces
         Task<Customer> GetCustomerByIdAsync(int customerId);
         Task<IEnumerable<Customer>> GetAllCustomersAsync();
         Task AddCustomerAsync(Customer customer);
+        Task AddCustomersAsync(IEnumerable<Customer> customers);
         Task UpdateCustomerAsync(Customer customer);
         Task DeleteCustomerAsync(int customerId);
         Task DeleteAllCustomersAsync();
@@ -23,6 +25,7 @@ namespace Rzx.Crm.Core.Interfaces
         #region Product
         Task<IEnumerable<Product>> GetAllProductsAsync();
         Task AddProductAsync(Product product);
+        Task AddProductsAsync(IEnumerable<Product> products);
         Task DeleteAllProductsAsync();
         #endregion
 
@@ -34,6 +37,8 @@ namespace Rzx.Crm.Core.Interfaces
         Task UpdateOrderAsync(Order order);
         Task DeleteOrderAsync(int orderId);
         Task DeleteAllOrdersAsync();
+        Task<int> GetOrderCountAsync(int customerId);
+        Task<IEnumerable<Order>> GetOrdersByCustomerAsync(int customerId);
         #endregion
     }
 }

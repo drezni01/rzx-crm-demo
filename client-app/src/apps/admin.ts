@@ -12,6 +12,5 @@ XH.renderApp({
     modelClass: AppModel,
     containerClass: AppContainer,
     isMobileApp: false,
-    isSSO: false,
     checkAccess: 'HOIST_ADMIN_READER'
 });

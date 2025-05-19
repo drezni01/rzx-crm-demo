@@ -7,37 +7,31 @@ namespace Rzx.Crm.Api.SignalR
     public class EntityUpdateNotificationHandler : INotificationHandler<EntityModificationNotification<Customer>>,
         INotificationHandler<EntityModificationNotification<Order>>
     {
-        private readonly MessageHub messageHub;
+        private readonly MessageHub _messageHub;
 
         public EntityUpdateNotificationHandler(MessageHub messageHub)
         {
-            this.messageHub = messageHub;
+            _messageHub = messageHub;
         }
 
         public async Task Handle(EntityModificationNotification<Customer> notification, CancellationToken cancellationToken)
         {
-            await Publish("customer", notification.Entity, notification.ModificationType.ToString());
+            await _messageHub.SendEntityMessageAsync(
+                new NotificationMessage(
+                    "customer",
+                    new Payload(notification.ModificationType.ToString(), notification.Entity)
+                )
+            );
         }
 
         public async Task Handle(EntityModificationNotification<Order> notification, CancellationToken cancellationToken)
         {
-            await Publish("order", notification.Entity, notification.ModificationType.ToString());
-        }
-
-        private async Task Publish(string topic, object entity, string eventType)
-        {
-            await messageHub.SendEntityMessageAsync(new NotificationMessage
-            {
-                Envelope = new Envelope
-                {
-                    topic = topic
-                },
-                Payload = new Payload
-                {
-                    Entity = entity,
-                    EventType = eventType
-                }
-            });
+            await _messageHub.SendEntityMessageAsync(
+                new NotificationMessage(
+                    "order",
+                    new Payload(notification.ModificationType.ToString(), notification.Entity)
+                )
+            );
         }
     }
 }

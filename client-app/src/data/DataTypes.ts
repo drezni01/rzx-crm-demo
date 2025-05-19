@@ -30,3 +30,19 @@ export type Order = {
     quantity: number;
     timestamp?: string;
 };
+
+export function asServerException(exception) {
+    if (exception.serverDetails) {
+        const serverException = exception.serverDetails;
+        if (serverException.error?.message) {
+            return {message: serverException.error.message, details: serverException.error};
+        } else if (serverException.errors) {
+            return {
+                message: JSON.stringify(serverException.errors),
+                details: serverException.errors
+            };
+        }
+    }
+
+    return exception;
+}

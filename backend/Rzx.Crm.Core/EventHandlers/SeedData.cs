@@ -6,16 +6,16 @@ namespace Rzx.Crm.Core.EventHandlers
 {
     public class SeedData : INotificationHandler<ApplicationStartedNotification>
     {
-        private readonly SeedingService seedingService;
+        private readonly SeedingService _seedingService;
 
         public SeedData(SeedingService seedingService)
         {
-            this.seedingService = seedingService;
+            _seedingService = seedingService;
         }
 
         public async Task Handle(ApplicationStartedNotification notification, CancellationToken cancellation)
         {
-            await seedingService.SeedDataAsync();
+            await _seedingService.SeedDataAsync();
         }
     }
 }

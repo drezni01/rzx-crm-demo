@@ -29,7 +29,7 @@ export const editOrderDialog = hoistCmp.factory<EditOrderDialogModel>(({model}) 
             ],
             item: editForm(),
             bbar: bbar(),
-            mask: XH.orderService.updateTask
+            mask: XH.orderService.apiTask
         })
     })
 );
@@ -74,7 +74,6 @@ const editForm = hoistCmp.factory<EditOrderDialogModel>(({model}) =>
             formField({
                 field: 'quantity',
                 item: numberInput({
-                    min: 1,
                     leftIcon: Icon.icon({iconName: 'input-numeric', prefix: 'fal'})
                 })
             })

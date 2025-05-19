@@ -2,18 +2,40 @@
 {
     public class NotificationMessage
     {
-        public Envelope Envelope{ get; set; }
-        public Payload Payload { get; set; }
+        private static ulong _messageId;
+
+        public NotificationMessage(string topic, Payload payload)
+        {
+            Envelope = new Envelope
+            {
+                Id = Interlocked.Increment(ref _messageId),
+                Topic = topic,
+                Timestamp = DateTime.UtcNow
+            };
+
+            Payload = payload;
+        }
+
+        public Envelope Envelope{ get; }
+        public Payload Payload { get;  }
     }
 
     public class Envelope
     {
-        public string topic { get; set; }
+        public string Topic { get; set; }
+        public ulong Id { get; set; }
+        public DateTime Timestamp { get; set; }
     }
 
     public class Payload
     {
-        public string EventType { get; set; }
-        public object Entity { get; set; }
+        public Payload(string eventType, object data)
+        {
+            EventType = eventType;
+            Data = data;
+        }
+
+        public string EventType { get;  }
+        public object Data { get; }
     }
 }

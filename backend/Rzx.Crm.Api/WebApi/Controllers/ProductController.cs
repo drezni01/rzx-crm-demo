@@ -8,17 +8,20 @@ namespace Rzx.Crm.Api.WebApi.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private ProductService productService;
+        private readonly WebApiConfig _webApiConfig;
+        private readonly ProductService _productService;
 
-        public ProductController(ProductService productService)
+        public ProductController(WebApiConfig webApiConfig, ProductService productService)
         {
-            this.productService = productService;
+            _webApiConfig = webApiConfig;
+            _productService = productService;
         }
 
         [HttpGet]
         public async Task<IEnumerable<Product>> GetProducts()
         {
-            return await productService.GetAllProductsAsync();
+            await Task.Delay(TimeSpan.FromSeconds(_webApiConfig.FakeDelaySec));
+            return await _productService.GetAllProductsAsync();
         }
     }
 }

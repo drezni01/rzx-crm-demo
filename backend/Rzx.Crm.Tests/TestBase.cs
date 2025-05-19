@@ -14,18 +14,18 @@ namespace Rzx.Crm.Tests
     [TestClass]
     public abstract class TestBase
     {
-        private static IServiceProvider serviceProvider;
+        private static IServiceProvider _serviceProvider;
 
         public TestBase()
         {
             lock (typeof(TestBase))
             {
-                if (serviceProvider == null)
-                    serviceProvider = CreateServiceProvider();
+                if (_serviceProvider == null)
+                    _serviceProvider = CreateServiceProvider();
             }
         }
 
-        protected IServiceProvider ServiceProvider { get { return serviceProvider; } }
+        protected IServiceProvider ServiceProvider { get { return _serviceProvider; } }
 
         private ApplicationConfig GetAppConfig()
         {

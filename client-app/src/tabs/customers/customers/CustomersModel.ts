@@ -2,7 +2,7 @@ import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {makeObservable} from '@xh/hoist/mobx';
 import {EditCustomerDialogModel} from './EditCustomerDialogModel';
 import {PanelConfig} from '@xh/hoist/desktop/cmp/panel';
-import {Customer} from '../../../data/DataTypes';
+import {asServerException, Customer} from '../../../data/DataTypes';
 import {DataViewModel} from '@xh/hoist/cmp/dataview';
 import {customerCard} from './Customers';
 import {Icon} from '@xh/hoist/icon';
@@ -50,7 +50,11 @@ export class CustomersModel extends HoistModel {
         });
         if (!confirm) return;
 
-        await XH.customerService.deleteCustomerAsync(this.selectedCustomer.customerId);
+        try {
+            await XH.customerService.deleteCustomerAsync(this.selectedCustomer.customerId);
+        } catch (e) {
+            XH.handleException(asServerException(e));
+        }
     }
 
     private createViewModel(): DataViewModel {

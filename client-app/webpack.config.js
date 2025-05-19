@@ -10,9 +10,9 @@ module.exports = (env = {}) => {
         appVersion: '0.0.1',
         favicon: './public/favicon.svg',
         devServerOpenPage: 'app/',
-        sourceMaps: 'devOnly',
+        sourceMaps: true,
         // Use React prod mode, primarily to avoid console warnings for react 18
-        reactProdMode: false,
+        reactProdMode: true,
         babelIncludePaths: [customPkgPath],
         ...env
     });

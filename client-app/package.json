@@ -4,8 +4,7 @@
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
-    "build": "webpack --env prodBuild",
-    "crm": "serve -s buid",
+    "build": "tsc",
     "buildAndAnalyze": "webpack --env prodBuild --env analyzeBundles",
     "hoistVer": "cat node_modules/@xh/hoist/package.json | grep version",
     "lint": "yarn lint:all",

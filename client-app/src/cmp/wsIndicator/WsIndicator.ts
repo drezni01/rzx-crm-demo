@@ -20,7 +20,10 @@ export const wsIndicator = hoistCmp.factory(({showDescription, status}) => {
     }
 
     return hbox(
-        div({className: classNames(className, `${className}__${colorClass}`)}),
+        div({
+            className: classNames(className, `${className}__${colorClass}`),
+            title: 'WebSocket status'
+        }),
         span({omit: !showDescription, item: description, style: {marginLeft: 8}})
     );
 });

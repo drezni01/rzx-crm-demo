@@ -11,7 +11,7 @@ namespace Rzx.Crm.Tests
         [TestMethod]
         public async Task TestCrud()
         {
-            var orderSvc = ServiceProvider.GetRequiredService<OrderService>();            
+            var orderSvc = ServiceProvider.GetRequiredService<OrderService>();
             var productSvc = ServiceProvider.GetRequiredService<ProductService>();
             var customerSvc = ServiceProvider.GetRequiredService<CustomerService>();
             var employeeSvc = ServiceProvider.GetRequiredService<EmployeeService>();
@@ -54,11 +54,11 @@ namespace Rzx.Crm.Tests
             order.Quantity = 200;
             await orderSvc.UpdateOrderAsync(order);
 
-            order= await orderSvc.GetOrderByIdAsync(order.OrderId);
+            order = await orderSvc.GetOrderByIdAsync(order.OrderId);
             Assert.AreEqual(200, order.Quantity, "did not update");
 
             await orderSvc.DeleteOrderAsync(order.OrderId);
-            Assert.IsNull(await orderSvc.GetOrderByIdAsync(order.OrderId), "did not delete");;
-        }        
+            Assert.IsNull(await orderSvc.GetOrderByIdAsync(order.OrderId), "did not delete"); ;
+        }
     }
 }

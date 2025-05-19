@@ -4,16 +4,16 @@ namespace Rzx.Crm.Api.SignalR
 {
     public class MessageHub : Hub
     {
-        private ILogger<MessageHub> logger;
+        private readonly ILogger<MessageHub> _logger;
 
         public MessageHub(ILogger<MessageHub> logger)
         {
-            this.logger = logger;
+            _logger = logger;
         }
 
         public async Task SendEntityMessageAsync(NotificationMessage message)
         {
-            await SendMessageAsync(message.Envelope.topic, message);
+            await SendMessageAsync(message.Envelope.Topic, message);
         }
 
         private async Task SendMessageAsync(string topic, NotificationMessage message)
@@ -25,7 +25,7 @@ namespace Rzx.Crm.Api.SignalR
             }
             catch(Exception e)
             {
-                logger.LogError(e, $"unable to pub SignalR message [{message}]");
+                _logger.LogError(e, $"unable to pub SignalR message [{message}]");
             }
         }
     }

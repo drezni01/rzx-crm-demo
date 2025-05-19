@@ -28,6 +28,7 @@ namespace Rzx.Crm.Application
             // configuration
             services.AddSingleton(appConfig.SeedData);
             services.AddSingleton(appConfig.Database);
+            services.AddSingleton(appConfig.WebApi);
 
             // business logic
             services.AddSingleton<EmployeeService>();

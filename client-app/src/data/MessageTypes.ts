@@ -17,7 +17,7 @@ export type MessageEnvelope = {
 
 export type MessagePayload = {
     eventType: MessageEventType;
-    entity?: any;
+    data?: any;
 };
 
 export type NotificationMessageCallbackFn = (NotificationMessage) => void;

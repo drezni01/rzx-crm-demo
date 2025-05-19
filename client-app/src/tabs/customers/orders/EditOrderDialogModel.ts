@@ -1,8 +1,8 @@
 import {HoistModel, managed, TaskObserver, XH} from '@xh/hoist/core';
 import {action, makeObservable, observable} from '@xh/hoist/mobx';
 import {FormModel} from '@xh/hoist/cmp/form';
-import {lengthIs, required} from '@xh/hoist/data';
-import {Order} from '../../../data/DataTypes';
+import {lengthIs, numberIs, required} from '@xh/hoist/data';
+import {asServerException, Order} from '../../../data/DataTypes';
 
 export class EditOrderDialogModel extends HoistModel {
     @observable isOpen = false;
@@ -39,7 +39,7 @@ export class EditOrderDialogModel extends HoistModel {
 
             this.close();
         } catch (e) {
-            XH.handleException(e);
+            XH.handleException(asServerException(e));
         }
     }
 
@@ -55,7 +55,7 @@ export class EditOrderDialogModel extends HoistModel {
                     disabled: true,
                     rules: [required]
                 },
-                {name: 'quantity', rules: [required]},
+                {name: 'quantity', rules: [required, numberIs({min: 1})]},
                 {name: 'timestamp'}
             ]
         });

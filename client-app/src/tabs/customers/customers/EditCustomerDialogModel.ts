@@ -1,6 +1,6 @@
 import {HoistModel, managed, TaskObserver, XH} from '@xh/hoist/core';
 import {action, makeObservable, observable} from '@xh/hoist/mobx';
-import {Customer} from '../../../data/DataTypes';
+import {asServerException, Customer} from '../../../data/DataTypes';
 import {FormModel} from '@xh/hoist/cmp/form';
 import {lengthIs, required} from '@xh/hoist/data';
 
@@ -39,7 +39,7 @@ export class EditCustomerDialogModel extends HoistModel {
 
             this.close();
         } catch (e) {
-            XH.handleException(e);
+            XH.handleException(asServerException(e));
         }
     }
 

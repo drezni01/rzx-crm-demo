@@ -39,7 +39,7 @@ namespace Rzx.Crm.Infra.Database
                 entity.Property(e => e.FirstName).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.LastName).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.MiddleInitial).HasMaxLength(1);
-                entity.Property(e => e.Timestamp).IsRequired().IsConcurrencyToken();
+                entity.Property(e => e.Timestamp).IsRequired().IsConcurrencyToken();                
             });
 
             modelBuilder.Entity<Employee>(entity =>
@@ -65,6 +65,10 @@ namespace Rzx.Crm.Infra.Database
                 entity.HasKey(e => e.OrderId).HasName("Order_PK");
                 entity.Property(e => e.OrderId).ValueGeneratedOnAdd();
                 entity.Property(e => e.Timestamp).IsRequired().IsConcurrencyToken();
+                
+                entity.HasOne<Customer>().WithMany().HasForeignKey(o => o.CustomerId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne<Employee>().WithMany().HasForeignKey(o=>o.SalesPersonId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne<Product>().WithMany().HasForeignKey(o=>o.ProductId).OnDelete(DeleteBehavior.Restrict);
             });
         }
 

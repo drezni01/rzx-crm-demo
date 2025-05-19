@@ -8,25 +8,27 @@ namespace Rzx.Crm.Api.WebApi.Controllers
     [ApiController]
     public class CustomerController : ControllerBase
     {
-        private CustomerService customerService;
+        private readonly WebApiConfig _webApiConfig;
+        private readonly CustomerService _customerService;
 
-        public CustomerController(CustomerService customerService)
+        public CustomerController(WebApiConfig webApiConfig, CustomerService customerService)
         {
-            this.customerService = customerService;
+            _webApiConfig = webApiConfig;
+            _customerService = customerService;
         }
 
         [HttpGet]
         public async Task<IEnumerable<Customer>> GetCustomers()
         {
-            await Task.Delay(1000);
-            return await customerService.GetAllCustomersAsync();
+            await Task.Delay(TimeSpan.FromSeconds(_webApiConfig.FakeDelaySec));
+            return await _customerService.GetAllCustomersAsync();
         }
 
         [HttpPost]
         public async Task<Customer> AddCustomer(Customer customer)
         {
-            await Task.Delay(1000);
-            await customerService.AddCustomerAsync(customer);
+            await Task.Delay(TimeSpan.FromSeconds(_webApiConfig.FakeDelaySec));
+            await _customerService.AddCustomerAsync(customer);
             return customer;
         }
 
@@ -34,8 +36,8 @@ namespace Rzx.Crm.Api.WebApi.Controllers
         [Route("{id}")]
         public async Task<Customer> UpdateCustomer(int id, Customer customer)
         {
-            await Task.Delay(1000);
-            await customerService.UpdateCustomerAsync(customer);
+            await Task.Delay(TimeSpan.FromSeconds(_webApiConfig.FakeDelaySec));
+            await _customerService.UpdateCustomerAsync(customer);
             return customer;
         }
 
@@ -43,8 +45,8 @@ namespace Rzx.Crm.Api.WebApi.Controllers
         [Route("{id}")]
         public async Task<IActionResult> DeleteCustomer(int id)
         {
-            await Task.Delay(1000);
-            await customerService.DeleteCustomerAsync(id);
+            await Task.Delay(TimeSpan.FromSeconds(_webApiConfig.FakeDelaySec));
+            await _customerService.DeleteCustomerAsync(id);
             return Ok(id);
         }
     }
