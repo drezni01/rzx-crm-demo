@@ -1,6 +1,3 @@
-# gradle
-.gradle/
-rzx-logs/
 *.log
 
 # Compiled source #

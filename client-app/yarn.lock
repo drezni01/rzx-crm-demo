@@ -2134,7 +2134,7 @@
     webpack-dev-server "~5.2.0"
     webpackbar "~7.0.0"
 
-"@xh/hoist@^73.0.0-SNAPSHOT":
+"@xh/hoist@73.0.0":
   version "73.0.0"
   resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-73.0.0.tgz#6a47ed8f3abce747cef1e3be333fe7d57cf85cc9"
   integrity sha512-ajvahHT2l2+u2aLmFbuZY9giCDUURn6k7wtS1sSVxNXWN0ik8+/9hwwuGerWwxScWiR8jN9iF6xCq06gP4bLVg==
